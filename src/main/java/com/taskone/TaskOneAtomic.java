@@ -1,11 +1,17 @@
 package com.taskone;
 
-public class TaskOneSync {
-    public static Integer value = 0;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.IntStream;
+
+public class TaskOneAtomic {
+    static AtomicInteger value = new AtomicInteger(0);
     public int iterations = 10;
 
-    public synchronized void add(Integer value) {
-        this.value += value;
+    public void add(int delta) {
+        value.addAndGet(delta);
     }
 
     Thread addOne = new Thread("Add One") {
@@ -39,9 +45,21 @@ public class TaskOneSync {
     };
 
     public static void main(String[] args) {
-        TaskOneSync taskOneSync = new TaskOneSync();
-        taskOneSync.addOne.start();
-        taskOneSync.substractOne.start();
-        taskOneSync.addSeven.start();
+        TaskOneAtomic taskOneAtomic = new TaskOneAtomic();
+        taskOneAtomic.init();
+    }
+
+    private void init() {
+            addOne.start();
+            substractOne.start();
+            addSeven.start();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Final Value " + value.get());
     }
 }
