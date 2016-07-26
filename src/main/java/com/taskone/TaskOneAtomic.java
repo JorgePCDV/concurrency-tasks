@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 public class TaskOneAtomic {
-    static AtomicInteger value = new AtomicInteger(0);
-    public int iterations = 10;
+    public static AtomicInteger value = new AtomicInteger(0);
+    public static final int ITERATIONS = 10;
 
     public void add(int delta) {
         value.addAndGet(delta);
@@ -16,9 +16,9 @@ public class TaskOneAtomic {
 
     Thread addOne = new Thread("Add One") {
         public void run() {
-            for (int i = 0; i <= iterations; i++) {
+            for (int i = 0; i <= ITERATIONS; i++) {
                 System.out.println("AddOne thread started");
-                add(1);
+                value.addAndGet(1);
                 System.out.println("Value is now: " + value.toString());
             }
         }
@@ -26,9 +26,9 @@ public class TaskOneAtomic {
 
     Thread substractOne = new Thread("Substract one") {
         public void run() {
-            for (int i = 0; i <= iterations; i++) {
+            for (int i = 0; i <= ITERATIONS; i++) {
                 System.out.println("AddOne thread started");
-                add(-1);
+                value.addAndGet(-1);
                 System.out.println("Value is now: " + value.toString());
             }
         }
@@ -36,9 +36,9 @@ public class TaskOneAtomic {
 
     Thread addSeven = new Thread("Add seven") {
         public void run() {
-            for (int i = 0; i <= iterations; i++) {
+            for (int i = 0; i <= ITERATIONS; i++) {
                 System.out.println("Add seven thread started");
-                add(7);
+                value.addAndGet(7);
                 System.out.println("Value is now: " + value.toString());
             }
         }
