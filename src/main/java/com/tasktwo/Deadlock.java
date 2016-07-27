@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Deadlock {
+    //TODO: Use locks one for each resource
     String str1 = "First";
     int counter = 0;
     Lock lock = new ReentrantLock();

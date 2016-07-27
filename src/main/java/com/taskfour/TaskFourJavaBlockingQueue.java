@@ -2,40 +2,14 @@ package com.taskfour;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import static java.lang.Thread.sleep;
 
-public class TaskFourFifoQueue {
+public class TaskFourJavaBlockingQueue {
 
-    public static class FIFOQueue {
-        private List<Double> queue;
-        private int numberOfElements;
-
-        public FIFOQueue(int numberOfElements) {
-            this.queue = new ArrayList<>();
-            this.numberOfElements = numberOfElements;
-        }
-
-       public synchronized void put(double putValue) throws IndexOutOfBoundsException, InterruptedException {
-           if (queue.size() >= numberOfElements) {
-               sleep(50);
-           } else {
-               queue.add(putValue);
-           }
-       }
-
-       public synchronized double get() throws Exception {
-           if (queue.isEmpty()) {
-               System.out.println("Queue currently empty");
-               sleep(50);
-           }
-           double outNumber = queue.get(0);
-           queue.remove(0);
-           return outNumber;
-       }
-    }
-
-    public static FIFOQueue myQueue = new FIFOQueue(10);
+    public static BlockingDeque myQueue = new LinkedBlockingDeque(10);
 
     public static class Producer implements Runnable {
         public void run() {
@@ -55,7 +29,8 @@ public class TaskFourFifoQueue {
         public void run() {
             while (true) {
                 try {
-                    Double number = myQueue.get();
+                    Double number = (Double) myQueue.getFirst();
+                    myQueue.removeFirst();
                     System.out.println("Consumed number: " + number);
                     sleep(10);
                 } catch (Exception e) {

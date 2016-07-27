@@ -18,7 +18,7 @@ public class TaskThreeExecutors {
 
 
         List<Integer> list = new ArrayList<Integer>();
-        // TODO: Scanner not read the first integer
+        //TODO: Does not do sum of numbers correctly
         while (scanner.hasNextInt()) {
             list.add(scanner.nextInt());
         }
@@ -53,7 +53,7 @@ public class TaskThreeExecutors {
             long value = TaskThreeExecutors.sum;
             try {
                 Thread.sleep(new Random().nextInt(100));
-                TaskThreeExecutors.sum =value + result;
+                TaskThreeExecutors.sum = value + result;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

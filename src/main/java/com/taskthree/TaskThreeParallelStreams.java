@@ -6,14 +6,17 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TaskThreeParallelStreams {
     public static void main(String args[]){
         Scanner scanner = new Scanner(System.in);
+
         List<Integer> list = new ArrayList<Integer>();
         while (scanner.hasNextInt()) {
             list.add(scanner.nextInt());
         }
+        IntStream.of();
         ExecutorService executor = Executors.newFixedThreadPool(list.size());
         for (Integer number : list) {
             Runnable factorialThread = new FactorialThread(number);
@@ -21,6 +24,7 @@ public class TaskThreeParallelStreams {
         }
         executor.shutdown();
         System.out.println("Executor terminated");
+
     }
 
     public static class FactorialThread implements Runnable {
@@ -46,7 +50,9 @@ public class TaskThreeParallelStreams {
                 if (factorial < 0) {
                     System.out.println("Negative numbers not allowed");
                 } else {
-                    IntStream.rangeClosed(2, factorial).reduce(1, (x, y) -> x * y);
+                    // IntStream.rangeClosed(2, factorial).reduce(1, (x, y) -> x * y);
+                    IntStream.range(2, factorial + 1)
+                            .reduce(1, (a, b) -> a * b);
                 }
             } catch(InterruptedException e) {
                 e.printStackTrace();
