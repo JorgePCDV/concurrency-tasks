@@ -1,17 +1,39 @@
 package com.taskfour;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.ArrayList;
+import java.util.List;
 
-/*public class TaskFourFifoQueue extends Queue {
-    Queue myQueue;
+public class TaskFourFifoQueue {
 
-    public Queue TaskFourFifoQueue(Integer elements) {
-        this.myQueue = new SynchronousQueue(elements);
+    public static class FIFOQueue {
+        private List<Double> queue;
+        private int numberOfElements;
+
+        public FIFOQueue(int numberOfElements) {
+            this.queue = new ArrayList<>();
+            this.numberOfElements = numberOfElements;
+        }
+
+       public synchronized void put(double putValue) throws IndexOutOfBoundsException {
+           if (queue.size() >= numberOfElements) {
+               throw new IndexOutOfBoundsException("Queue does not allow more than " + numberOfElements + " elements");
+           } else {
+               queue.add(putValue);
+           }
+       }
+
+       public synchronized double get() throws Exception {
+           if (queue.isEmpty()) {
+               throw new Exception("No elements in queue");
+           }
+
+           double firstOutNumber = queue.get(0);
+
+           return firstOutNumber;
+       }
     }
 
-    TaskFourFifoQueue myQueue = new TaskFourFifoQueue(10);
+    public static FIFOQueue myQueue = new FIFOQueue(10);
 
     public static class Producer implements Runnable {
         public void run() {
@@ -30,7 +52,7 @@ import java.util.concurrent.SynchronousQueue;
                     Double number = myQueue.get();
                     System.out.println("Consumed number: " + number);
                     Thread.sleep(10);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -41,4 +63,4 @@ import java.util.concurrent.SynchronousQueue;
         new Thread(new Producer()).start();
         new Thread(new Consumer()).start();
     }
-}*/
+}

@@ -12,35 +12,37 @@ public class Deadlock {
     Thread trd1 = new Thread("My Thread 1") {
         public synchronized void run() {
             while (true) {
-                if (counter % 2 == 0) {
-                    try {
+                try {
+                    if (counter % 2 != 0) {
                         lock.lock();
                         System.out.println(str1 + " " + counter++);
                         str1 = "Previous My Thread 1";
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
                         lock.unlock();
+                    } else {
+                        sleep(10);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
+
     };
 
     Thread trd2 = new Thread("My Thread 2") {
         public synchronized void run() {
             while (true) {
-                if (counter % 2 != 0) {
-                    try {
+                try {
+                    if (counter % 2 == 0) {
                         lock.lock();
                         System.out.println(str1 + " " + counter++);
                         str1 = "Previous My Thread 2";
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
                         lock.unlock();
+                    } else {
+                        sleep(10);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
