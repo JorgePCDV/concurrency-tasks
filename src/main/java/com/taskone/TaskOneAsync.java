@@ -1,17 +1,24 @@
 package com.taskone;
 
+import java.util.Random;
+
 public class TaskOneAsync {
-    public static Integer value = 0;
+    public int value = 0;
     public int iterations = 10;
 
-    Thread addOne = new Thread("Add One") {
+    public int increment(int value, int increment) throws InterruptedException {
+        Thread.sleep(new Random().nextInt(20));
+        value = value + increment;
+        Thread.sleep(new Random().nextInt(5));
+        return value;
+    }
+
+    public Thread addOne = new Thread("Add One") {
         public void run() {
-            for (int i = 0; i <= iterations; i++) {
-                System.out.println("AddOne thread started");
-                value += 1;
-                System.out.println("Value is now: " + value.toString());
+            for (int i = 0; i < iterations; i++) {
                 try {
-                    sleep(300);
+                    value = increment(value, 1);
+                    System.out.println("1 thread value now: " + value);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -19,14 +26,12 @@ public class TaskOneAsync {
         }
     };
 
-    Thread substractOne = new Thread("Substract one") {
+    public Thread substractOne = new Thread("Substract one") {
         public void run() {
-            for (int i = 0; i <= iterations; i++) {
-                System.out.println("AddOne thread started");
-                value -= 1;
-                System.out.println("Value is now: " + value.toString());
+            for (int i = 0; i < iterations; i++) {
                 try {
-                    sleep(300);
+                    value = increment(value, -1);
+                    System.out.println("2 thread value now: " + value);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -34,14 +39,12 @@ public class TaskOneAsync {
         }
     };
 
-    Thread addSeven = new Thread("Add seven") {
+    public Thread addSeven = new Thread("Add seven") {
         public void run() {
-            for (int i = 0; i <= iterations; i++) {
-                System.out.println("Add seven thread started");
-                value += 7;
-                System.out.println("Value is now: " + value.toString());
+            for (int i = 0; i < iterations; i++) {
                 try {
-                    sleep(300);
+                    value = increment(value, 7);
+                    System.out.println("3 thread value now: " + value);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

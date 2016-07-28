@@ -1,61 +1,70 @@
 package com.taskthree;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class TaskThreeExecutors {
-    public static void main(String args[]){
-        Scanner scanner = new Scanner(System.in);
 
+    public static void main(String args[]) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] arr = reader.readLine().split(" ");
         List<Integer> list = new ArrayList<Integer>();
 
-        // TODO: Scanner not read the first integer
-        while (scanner.hasNextInt()) {
-            list.add(scanner.nextInt());
+        for (int i=0; i < arr.length;i++) {
+            list.add(Integer.parseInt(arr[i]));
         }
 
         ExecutorService executor = Executors.newFixedThreadPool(list.size());
+        List<Future> futures = new ArrayList();
         for (Integer number : list) {
-            Runnable factorialThread = new FactorialThread(number);
-            executor.execute(factorialThread);
+            Future<Integer> future = executor.submit(new FactorialThread(number));
+            futures.add(future);
         }
         executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.MINUTES);
+
+        long sum = 0;
+        for (Future<Integer> future : futures) {
+            sum += future.get();
+        }
+
+        System.out.println("Sum of all factorials is: " + sum);
         System.out.println("Executor terminated");
     }
 
-    public static class FactorialThread implements Runnable {
+    public static class FactorialThread implements Callable<Integer> {
         private Integer base;
         private Integer factorial;
 
+
         public FactorialThread(Integer f) {
             this.base = f;
-            this.factorial = f;
+            this.factorial = 1;
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             System.out.println(Thread.currentThread().getName() + " starting factorial " + this.factorial);
             calculateFactorial();
-            System.out.println(Thread.currentThread().getName() + " ended calculating " + this.factorial);
+            System.out.println(Thread.currentThread().getName() + String.format("calculated factorial for number=%s, result=%s", base, factorial));
+            return factorial;
         }
 
         public void calculateFactorial() {
-            try {
-                Thread.sleep(300);
-                if (factorial < 0) {
-                    System.out.println("Negative numbers not allowed");
-                } else {
-                    for (int j = factorial - 1; j >= 1; j--) {
-                        factorial *= j;
-                    }
+            if (factorial < 0) {
+                System.out.println("Negative numbers not allowed");
+            } else {
+                for (int j = 1; j <= base; j++) {
+                    factorial *= j;
                 }
-            } catch(InterruptedException e) {
-                e.printStackTrace();
             }
             System.out.println("Factorial of " + base + " is " + factorial);
         }
+
     }
 }
