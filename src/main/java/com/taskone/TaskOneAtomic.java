@@ -13,30 +13,30 @@ public class TaskOneAtomic {
 
     Thread addOne = new Thread("Add One") {
         public void run() {
-            for (int i = 0; i <= ITERATIONS; i++) {
+            for (int i = 0; i < ITERATIONS; i++) {
                 System.out.println("AddOne thread started");
-                value.addAndGet(1);
-                System.out.println("Value is now: " + value.toString());
+                int val = value.addAndGet(1);
+                System.out.println("Value is now: " + val);
             }
         }
     };
 
     Thread substractOne = new Thread("Substract one") {
         public void run() {
-            for (int i = 0; i <= ITERATIONS; i++) {
+            for (int i = 0; i < ITERATIONS; i++) {
                 System.out.println("AddOne thread started");
-                value.addAndGet(-1);
-                System.out.println("Value is now: " + value.toString());
+                int val = value.addAndGet(-1);
+                System.out.println("Value is now: " + val);
             }
         }
     };
 
     Thread addSeven = new Thread("Add seven") {
         public void run() {
-            for (int i = 0; i <= ITERATIONS; i++) {
+            for (int i = 0; i < ITERATIONS; i++) {
                 System.out.println("Add seven thread started");
-                value.addAndGet(7);
-                System.out.println("Value is now: " + value.toString());
+                int val = value.addAndGet(7);
+                System.out.println("Value is now: " + val);
             }
         }
     };
@@ -47,9 +47,9 @@ public class TaskOneAtomic {
     }
 
     private void init() {
-            addOne.start();
-            substractOne.start();
-            addSeven.start();
+        addOne.start();
+        substractOne.start();
+        addSeven.start();
 
         try {
             Thread.sleep(1000);

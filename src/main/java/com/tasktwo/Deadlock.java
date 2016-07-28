@@ -3,44 +3,45 @@ package com.tasktwo;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.IntStream;
 
 public class Deadlock {
     //TODO: Use locks one for each resource
+
     String str1 = "First";
-    int counter = 0;
+    Integer counter = 0;
     Lock lock = new ReentrantLock();
 
+    public void increaseCounter() {
+        synchronized (counter) {
+            counter++;
+        }
+    }
+
     Thread trd1 = new Thread("My Thread 1") {
-        public synchronized void run() {
+        public  void run() {
             while (true) {
                 try {
-                    if (counter % 2 != 0) {
-                        lock.lock();
-                        System.out.println(str1 + " " + counter++);
+                    increaseCounter();
+                    System.out.println(str1 + " " + counter);
+                    synchronized (str1) {
                         str1 = "Previous My Thread 1";
-                        lock.unlock();
-                    } else {
-                        sleep(10);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-
     };
 
     Thread trd2 = new Thread("My Thread 2") {
-        public synchronized void run() {
+        public void run() {
             while (true) {
                 try {
-                    if (counter % 2 == 0) {
-                        lock.lock();
-                        System.out.println(str1 + " " + counter++);
+                    increaseCounter();
+                    System.out.println(str1 + " " + counter);
+                    synchronized (str1) {
                         str1 = "Previous My Thread 2";
-                        lock.unlock();
-                    } else {
-                        sleep(10);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

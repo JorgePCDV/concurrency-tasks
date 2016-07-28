@@ -2,47 +2,71 @@ package com.taskfour;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Thread.sleep;
+import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class TaskFourFifoQueue {
 
     public static class FIFOQueue {
         private List<Double> queue;
         private int numberOfElements;
+        final Lock lock = new ReentrantLock();
+
 
         public FIFOQueue(int numberOfElements) {
             this.queue = new ArrayList<>();
             this.numberOfElements = numberOfElements;
         }
 
-       public synchronized void put(double putValue) throws IndexOutOfBoundsException, InterruptedException {
-           if (queue.size() >= numberOfElements) {
-               sleep(50);
-           } else {
-               queue.add(putValue);
-           }
-       }
+        public void put(double putValue) throws IndexOutOfBoundsException, InterruptedException {
+            final Lock lock = this.lock;
+            synchronized (lock) {
+                while (queue.size() >= numberOfElements) {
+                    System.out.println("Queue reached maximum size of " + numberOfElements + " elements");
+                    lock.wait();
+                }
+            }
+            synchronized (lock) {
+                queue.add(putValue);
+                lock.notifyAll();
+            }
+        }
 
-       public synchronized double get() throws Exception {
-           if (queue.isEmpty()) {
-               System.out.println("Queue currently empty");
-               sleep(50);
-           }
-           double outNumber = queue.get(0);
-           queue.remove(0);
-           return outNumber;
-       }
+        public double get() throws Exception {
+            double outNumber;
+            final Lock lock = this.lock;
+            synchronized (lock) {
+                while (queue.isEmpty()) {
+                    try {
+                        System.out.println("Queue currently empty");
+                        lock.wait();
+                    } catch(InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            synchronized (lock) {
+                outNumber = queue.get(0);
+                queue.remove(0);
+                lock.notifyAll();
+            }
+            return outNumber;
+        }
     }
 
     public static FIFOQueue myQueue = new FIFOQueue(10);
 
     public static class Producer implements Runnable {
+        int counter = 1;
+
         public void run() {
             while (true) {
-                Double number = Math.random();
+                double number = counter++;
                 try {
                     myQueue.put(number);
+                    Thread.sleep((long)(Math.random() * 10));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -57,7 +81,7 @@ public class TaskFourFifoQueue {
                 try {
                     Double number = myQueue.get();
                     System.out.println("Consumed number: " + number);
-                    sleep(10);
+                    Thread.sleep((long)(Math.random() * 10));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

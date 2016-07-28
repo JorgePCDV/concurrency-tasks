@@ -2,6 +2,7 @@ package com.taskfour;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -30,6 +31,9 @@ public class TaskFourJavaBlockingQueue {
             while (true) {
                 try {
                     Double number = (Double) myQueue.getFirst();
+                    if (number.equals(null)) {
+                        throw new NoSuchElementException("No elements in queue");
+                    }
                     myQueue.removeFirst();
                     System.out.println("Consumed number: " + number);
                     sleep(10);
