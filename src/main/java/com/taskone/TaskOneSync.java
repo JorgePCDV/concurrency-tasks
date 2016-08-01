@@ -7,14 +7,13 @@ public class TaskOneSync {
     volatile public static int value = 0;
     public int iterations = 10;
 
-    final Semaphore lock = new Semaphore(1, false);
+    final Semaphore lock = new Semaphore(1, true);
 
     public int increment(int value, int increment) throws InterruptedException {
         Thread.sleep(new Random().nextInt(20));
         value = value + increment;
         Thread.sleep(new Random().nextInt(5));
         return value;
-
     }
 
     public Thread addOne = new Thread("Add One") {

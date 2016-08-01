@@ -7,10 +7,6 @@ public class TaskOneAtomic {
     public static AtomicInteger value = new AtomicInteger(0);
     public static final int ITERATIONS = 10;
 
-    public void add(int delta) {
-        value.addAndGet(delta);
-    }
-
     Thread addOne = new Thread("Add One") {
         public void run() {
             for (int i = 0; i < ITERATIONS; i++) {
@@ -46,7 +42,7 @@ public class TaskOneAtomic {
         taskOneAtomic.init();
     }
 
-    private void init() {
+    public void init() {
         addOne.start();
         substractOne.start();
         addSeven.start();

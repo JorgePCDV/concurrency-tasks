@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static java.lang.Thread.sleep;
 
 public class TaskFourJavaBlockingQueue {
 
-    public static BlockingDeque myQueue = new LinkedBlockingDeque(10);
+    public static LinkedBlockingQueue<Double> myQueue = new LinkedBlockingQueue<>(10);
 
     public static class Producer implements Runnable {
         public void run() {
@@ -30,11 +31,7 @@ public class TaskFourJavaBlockingQueue {
         public void run() {
             while (true) {
                 try {
-                    Double number = (Double) myQueue.getFirst();
-                    if (number.equals(null)) {
-                        throw new NoSuchElementException("No elements in queue");
-                    }
-                    myQueue.removeFirst();
+                    Double number = myQueue.take();
                     System.out.println("Consumed number: " + number);
                     sleep(10);
                 } catch (Exception e) {
@@ -46,6 +43,30 @@ public class TaskFourJavaBlockingQueue {
 
     public static void main(String[] args) {
         new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();new Thread(new Producer()).start();
         new Thread(new Consumer()).start();
     }
 }
