@@ -3,16 +3,18 @@ package com.taskfour;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+// TODO: two semaphores, one for empty one for full
 public class TaskFourFifoQueue {
 
     public static class FIFOQueue {
         private List<Double> queue;
         private int numberOfElements;
-        final Lock lock = new ReentrantLock();
-
+        final Semaphore semaphorePut = new Semaphore(1, true);
+        final Semaphore semaphoreGet = new Semaphore(0, true);
 
         public FIFOQueue(int numberOfElements) {
             this.queue = new ArrayList<>();
@@ -20,7 +22,23 @@ public class TaskFourFifoQueue {
         }
 
         public void put(double putValue) throws IndexOutOfBoundsException, InterruptedException {
-            final Lock lock = this.lock;
+            try {
+                semaphorePut.acquire();
+                while (queue.size() >= numberOfElements) {
+                    System.out.println("Queue reached maximum size of " + numberOfElements + " elements");
+                }
+            } finally {
+                semaphorePut.release();
+            }
+
+            try {
+                semaphorePut.acquire();
+                queue.add(putValue);
+            } finally {
+                semaphoreGet.release();
+            }
+
+            /*final Lock lock = this.lock;
             synchronized (lock) {
                 while (queue.size() >= numberOfElements) {
                     System.out.println("Queue reached maximum size of " + numberOfElements + " elements");
@@ -30,11 +48,32 @@ public class TaskFourFifoQueue {
             synchronized (lock) {
                 queue.add(putValue);
                 lock.notifyAll();
-            }
+            }*/
         }
 
         public double get() throws Exception {
             double outNumber;
+
+            try {
+                semaphoreGet.acquire();
+                while (queue.isEmpty()) {
+                    System.out.println("Queue currently empty");
+                }
+            } finally {
+                semaphoreGet.release();
+            }
+
+            try {
+                semaphoreGet.acquire();
+                outNumber = queue.get(0);
+                queue.remove(0);
+            } finally {
+                semaphorePut.release();
+            }
+
+            return outNumber;
+
+            /*double outNumber;
             final Lock lock = this.lock;
             synchronized (lock) {
                 while (queue.isEmpty()) {
@@ -52,7 +91,7 @@ public class TaskFourFifoQueue {
                 queue.remove(0);
                 lock.notifyAll();
             }
-            return outNumber;
+            return outNumber;*/
         }
     }
 
@@ -91,6 +130,38 @@ public class TaskFourFifoQueue {
 
     public static void main(String[] args) {
         new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Producer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
+        new Thread(new Consumer()).start();
         new Thread(new Consumer()).start();
     }
 }

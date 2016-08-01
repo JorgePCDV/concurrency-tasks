@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class TaskThreeExecutors {
+    private Integer base;
 
     public static void main(String args[]) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -26,7 +27,6 @@ public class TaskThreeExecutors {
             futures.add(future);
         }
         executor.shutdown();
-        executor.awaitTermination(1, TimeUnit.MINUTES);
 
         long sum = 0;
         for (Future<Integer> future : futures) {
@@ -39,24 +39,23 @@ public class TaskThreeExecutors {
 
     public static class FactorialThread implements Callable<Integer> {
         private Integer base;
-        private Integer factorial;
 
 
         public FactorialThread(Integer f) {
             this.base = f;
-            this.factorial = 1;
         }
 
         @Override
         public Integer call() {
-            System.out.println(Thread.currentThread().getName() + " starting factorial " + this.factorial);
-            calculateFactorial();
-            System.out.println(Thread.currentThread().getName() + String.format("calculated factorial for number=%s, result=%s", base, factorial));
-            return factorial;
+            System.out.println(Thread.currentThread().getName() + " starting factorial " + this.base);
+            int result = calculateFactorial(base);
+            System.out.println(Thread.currentThread().getName() + String.format("calculated factorial for number=%s, result=%s", base, result));
+            return result;
         }
 
-        public void calculateFactorial() {
-            if (factorial < 0) {
+        public int calculateFactorial(int base) {
+            int factorial = 1;
+            if (base < 0) {
                 System.out.println("Negative numbers not allowed");
             } else {
                 for (int j = 1; j <= base; j++) {
@@ -64,6 +63,7 @@ public class TaskThreeExecutors {
                 }
             }
             System.out.println("Factorial of " + base + " is " + factorial);
+            return factorial;
         }
 
     }
